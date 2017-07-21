@@ -1,0 +1,88 @@
+ interface Authorize {
+   void check(String password);
+}
+//*****************************
+
+ class RealAuthorizeN implements Authorize {
+
+ 
+
+   public RealAuthorizeN(){
+        loadAuthorize();
+   }
+  
+
+   @Override
+   public  void check(String password) {
+      System.out.println(" ACCSSES GRANTED");
+      System.out.println(" ------------------------------------ ");
+   
+   }
+
+   private void loadAuthorize(){
+      System.out.println("**** call RealAuthorize class ***** ");
+   }
+    private static RealAuthorizeN real = new RealAuthorizeN();
+   public static RealAuthorizeN get()
+   {
+return real;
+   }
+}
+
+//*********************************
+
+ class ProxyauthorizeN implements Authorize{
+
+   
+   private static String password;
+   private String refpassword = "open";
+
+   public ProxyauthorizeN(){
+      System.out.println("***** calling the  proxy class ****** ");
+   }
+  public static RealAuthorizeN realAuthorize ;
+   @Override
+   public void check(String password) {
+       this.password= password;
+       realAuthorize = RealAuthorizeN.get();
+       System.out.println("****** checking ***** ");
+      if(password.equals(refpassword)){
+          System.out.println(" PASSWORD MATCHED ");
+      
+      
+      realAuthorize.check("run");
+   }
+   else{
+       System.out.println(" PASSWORD NOT MATCHED ");
+   }
+}
+ private static ProxyauthorizeN proxy = new ProxyauthorizeN();
+   public static ProxyauthorizeN getinstance()
+   {
+return proxy;
+   }
+}
+
+//**************************************
+
+public class ProxyPatternDemoN1 {
+	
+   public static void main(String[] args) {
+      Authorize authorize1 =  ProxyauthorizeN.getinstance();
+          Authorize authorize2 =  ProxyauthorizeN.getinstance();
+       Authorize authorize3 =  ProxyauthorizeN.getinstance();
+        Authorize authorize4 =  ProxyauthorizeN.getinstance();
+
+      //image will be loaded from disk
+      authorize1.check(args[0]); 
+      System.out.println("");
+       authorize2.check(args[1]);
+       authorize3.check(args[2]);
+       authorize4.check(args[3]); 
+
+      
+      //image will not be loaded from disk
+      //authorize2.check("close");
+         
+   }
+}
